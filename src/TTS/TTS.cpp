@@ -323,7 +323,6 @@ wchar_t** TTS::languages(size_t& size) {
 
 
 unsigned int TTS::get_sample_rate() {
-    //tts.synthesizer.output_sample_rate
     PyObject* syth = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_self), "synthesizer");
     PyObject* pValue = PyObject_GetAttrString(syth, "output_sample_rate");
     return static_cast<unsigned int>(PyLong_AsLong(pValue));
@@ -448,7 +447,7 @@ unsigned char* TTS::tts(size_t& size, const wchar_t* text, const wchar_t* speake
         Py_ssize_t valueSize = PyList_Size(pValue);
         size = valueSize * sizeof(npy_float32) + WAV::WAVHeader::size();
         unsigned char* ret = new unsigned char[size];
-        WAV::WAVHeader header(valueSize * sizeof(npy_float32), get_sample_rate(), WAV::type_format_e::PCM, 32, 1);
+        WAV::WAVHeader header(valueSize * sizeof(npy_float32), get_sample_rate(), WAV::type_format_e::PCM, bits_pr_sample, number_of_channels);
         header.insert_header(ret);
         
         for(Py_ssize_t i = 0; i < valueSize * sizeof(npy_float32); i += sizeof(npy_float32)) {

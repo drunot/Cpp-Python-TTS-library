@@ -42,6 +42,8 @@ class TTS_API TTS {
     void tts_to_file(const wchar_t* text, const wchar_t* speaker = L"", const wchar_t* language = L"", const wchar_t* speaker_wav = L"", const wchar_t* file_path = L"output.wav");
     wchar_t* ToString();
     unsigned int get_sample_rate();
+    static constexpr int bits_pr_sample = 32;
+    static constexpr int number_of_channels = 1;
     
   private:
     static bool _initialized;
