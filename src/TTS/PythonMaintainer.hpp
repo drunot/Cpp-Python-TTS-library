@@ -9,11 +9,28 @@ using PythonThreadState = void *;
 
 class TTS_API PythonMaintainer {
   public:
+    /**
+     * @brief Get the instance of the Python Maintainer.
+     *
+     * @return PythonMaintainer* The instance.
+     */
     static PythonMaintainer* getInstance();
     
+    /**
+     * @brief Initialize python.
+     *
+     */
     void python_initialize();
     
+    /**
+     * @brief Finalize python.
+     *
+     */
     void python_finalize();
+    /**
+     * @brief Destroy the Python Maintainer.
+     *
+     */
     ~PythonMaintainer();
   private:
     bool _instantiated = false;

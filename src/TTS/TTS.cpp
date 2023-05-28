@@ -6,11 +6,8 @@
 #include"WAV/WAVHeader.hpp"
 
 PythonObject TTS::_pTTS;
-PythonObject TTS::_pModels;
 PythonObject TTS::_pIs_multi_speaker;
 PythonObject TTS::_pIs_multi_lingual;
-PythonObject TTS::_pSpeakers;
-PythonObject TTS::_pLanguages;
 PythonObject TTS::_pGet_models_file_path;
 PythonObject TTS::_pList_models;
 PythonObject TTS::_pDownload_model_by_name;
@@ -106,17 +103,6 @@ void TTS::initialize() {
         _pTTS = PyObject_GetAttrString(pTTSModule, "TTS");
         
         if(_pTTS) {
-            // Get references to all functions in the TTS class.
-            PyObject* pModelsProp = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "models");
-            
-            if(pModelsProp) {
-                _pModels = PyObject_GetAttrString(pModelsProp, "__get__");
-            } else {
-                std::wcout << L"models was not found\n";
-                throw std::runtime_error("models was not found");
-            }
-            
-            Py_DECREF(pModelsProp);
             PyObject* pIs_multi_speakerProp = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "is_multi_speaker");
             
             if(pIs_multi_speakerProp) {
@@ -137,25 +123,6 @@ void TTS::initialize() {
             }
             
             Py_DECREF(pIs_multi_lingualProp);
-            PyObject* pSpeakersProp = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "speakers");
-            
-            if(pSpeakersProp) {
-                _pSpeakers = PyObject_GetAttrString(pSpeakersProp, "__get__");
-            } else {
-                std::wcout << L"speakers was not found\n";
-                throw std::runtime_error("speakers was not found");
-            }
-            
-            PyObject* pLanguagesProp = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "languages");
-            
-            if(pLanguagesProp) {
-                _pLanguages = PyObject_GetAttrString(pLanguagesProp, "__get__");
-            } else {
-                std::wcout << L"languages was not found\n";
-                throw std::runtime_error("languages was not found");
-            }
-            
-            Py_DECREF(pLanguagesProp);
             _pGet_models_file_path = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "get_models_file_path");
             _pList_models = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "list_models");
             _pDownload_model_by_name = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pTTS), "download_model_by_name");
@@ -190,11 +157,8 @@ void TTS::initialize() {
 }
 
 void TTS::finalize() {
-    Py_DECREF(_pModels);
     Py_DECREF(_pIs_multi_speaker);
     Py_DECREF(_pIs_multi_lingual);
-    Py_DECREF(_pSpeakers);
-    Py_DECREF(_pLanguages);
     Py_DECREF(_pGet_models_file_path);
     Py_DECREF(_pList_models);
     Py_DECREF(_pDownload_model_by_name);
@@ -211,9 +175,9 @@ void TTS::finalize() {
 }
 
 wchar_t** TTS::models(size_t& size) {
-    PyObject* args = PyTuple_Pack(1, _self);
+    // PyObject* args = PyTuple_Pack(1, _self);
     PyObject* pValue;
-    pValue = PyObject_CallObject(reinterpret_cast<PyObject*>(_pModels), args);
+    pValue = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_self), "models");
     
     // std::wcout << L"PyList_Check(pValue): " << PyList_Check(pValue) << "\n";
     if(PyList_Check(pValue)) {
@@ -227,13 +191,14 @@ wchar_t** TTS::models(size_t& size) {
             ret[i] = tempStr;
         }
         
-        Py_DECREF(args);
+        // Py_DECREF(args);
         Py_DECREF(pValue);
         return ret;
     }
     
-    Py_DECREF(args);
+    // Py_DECREF(args);
     Py_DECREF(pValue);
+    size = 0;
     return nullptr;
 }
 
@@ -268,7 +233,7 @@ bool TTS::is_multi_lingual() {
 wchar_t** TTS::speakers(size_t& size) {
     PyObject* args = PyTuple_Pack(1, _self);
     PyObject* pValue;
-    pValue = PyObject_CallObject(reinterpret_cast<PyObject*>(_pSpeakers), args);
+    pValue = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_self), "speakers");
     
     // std::wcout << L"PyList_Check(pValue): " << PyList_Check(pValue) << "\n";
     if(PyList_Check(pValue)) {
@@ -294,9 +259,8 @@ wchar_t** TTS::speakers(size_t& size) {
 }
 
 wchar_t** TTS::languages(size_t& size) {
-    PyObject* args = PyTuple_Pack(1, _self);
     PyObject* pValue;
-    pValue = PyObject_CallObject(reinterpret_cast<PyObject*>(_pLanguages), args);
+    pValue = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_self), "languages");
     
     // std::wcout << L"PyList_Check(pValue): " << PyList_Check(pValue) << "\n";
     if(PyList_Check(pValue)) {
@@ -310,12 +274,10 @@ wchar_t** TTS::languages(size_t& size) {
             ret[i] = tempStr;
         }
         
-        Py_DECREF(args);
         Py_DECREF(pValue);
         return ret;
     }
     
-    Py_DECREF(args);
     Py_DECREF(pValue);
     size = 0;
     return nullptr;
