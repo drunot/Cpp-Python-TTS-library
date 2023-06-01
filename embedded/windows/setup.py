@@ -41,7 +41,7 @@ def getPip(embedded_path: str):
             progress_bar.update(len(chunk))
             if chunk:
                 pip_py.write(chunk)
-    subprocess.check_call(["./python.exe", "get-pip.py"])
+    subprocess.check_call([f"{embedded_path}/python.exe", "get-pip.py"])
     os.remove("get-pip.py")
     with open(f"python{major}{minor}._pth", "a") as include_file:
         include_file.write("\nLib\nLib/site-packages\n")
@@ -73,7 +73,7 @@ def install(embedded_path: str, package_name: str, *args) -> None:
 if __name__ == "__main__":
     dist = os.path.realpath(f"{os.path.split(__file__)[0]}/build/Release")
     if len(sys.argv) > 1:
-        dist = sys.argv[1]
+        dist = os.path.realpath(sys.argv[1])
 
     print(f"Installing python to: {dist}")
 

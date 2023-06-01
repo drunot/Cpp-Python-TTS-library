@@ -30,7 +30,13 @@ cmake .. -A x64
 cmake --build . --config Release
 ```
 
-**Third:** Setup the embedded python environment:
+**Third:** Install the library for use in other projects by running the following command as admin:
+
+```powershell
+cmake --build . --config Release --target install
+```
+
+**Forth (Optional):** Setup the embedded python environment for the project that uses this library:
 
 **NB:** This embedded python environment will be setup with the same version of python that is currently installed on your system. This library was only tested with Python version 3.10.10.
 
@@ -72,7 +78,13 @@ cmake .. -DCMAKE_BUILD_TYPE=release
 make -j$(nproc)
 ```
 
-**Third:** Install required libraries:
+**Third** Install the library for use in other projects. This might need root permissions:
+
+```bash
+make install
+```
+
+**Forth (Optional):** Install required libraries for python in order for the library to work:
 
 **NB:** Right now embedded python environments is not tested on Linux. The library is also only tested with Python version 3.8.10 installed on the Linux system.
 
