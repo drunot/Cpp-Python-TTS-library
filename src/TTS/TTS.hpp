@@ -63,7 +63,7 @@ class TTS_API TTS {
      * @brief Initialize python and the TTS module. Should be called before any objects are created.
      *
      */
-    static void initialize();
+    static bool initialize();
     /**
      * @brief Finalize python and the TTS module. Should be called after all TTS objects are deleted.
      *

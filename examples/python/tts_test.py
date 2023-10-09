@@ -12,7 +12,7 @@ if __name__ == "__main__":
     for num, model in enumerate(TTS.list_models()):
         print(f"{num}: {model}")
 
-    tts = TTS(TTS.list_models()[6])
+    tts = TTS(TTS.list_models()[10])
 
     data = tts.tts("This is a TTS test!")
     sample_rate = tts.synthesizer.output_sample_rate

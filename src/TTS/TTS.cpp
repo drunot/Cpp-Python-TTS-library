@@ -84,9 +84,9 @@ TTS& TTS::operator=(TTS&& move) {
     return *this;
 }
 
-void TTS::initialize() {
+bool TTS::initialize() {
     if(_initialized) {
-        return;
+        return true;
     }
     
     // Init python.
@@ -110,6 +110,7 @@ void TTS::initialize() {
             } else {
                 std::wcout << L"is_multi_speaker was not found\n";
                 throw std::runtime_error("is_multi_speaker was not found");
+                return false;
             }
             
             Py_DECREF(pIs_multi_speakerProp);
@@ -120,6 +121,7 @@ void TTS::initialize() {
             } else {
                 std::wcout << L"is_multi_lingual was not found\n";
                 throw std::runtime_error("is_multi_lingual was not found");
+                return false;
             }
             
             Py_DECREF(pIs_multi_lingualProp);
@@ -133,10 +135,12 @@ void TTS::initialize() {
         } else {
             std::wcout << L"'TTS.api.TSS' module could not be loaded.\n";
             throw std::runtime_error("'TTS.api.TSS' module could not be loaded.");
+            return false;
         }
     } else {
         std::wcout << L"'TTS.api' module could not be loaded.\n";
         throw std::runtime_error("'TTS.api' module could not be loaded.");
+        return false;
     }
     
     _pNumPy = PyImport_ImportModule("numpy");
@@ -148,12 +152,15 @@ void TTS::initialize() {
             _pToBytes = PyObject_GetAttrString(reinterpret_cast<PyObject*>(_pFloat32), "tobytes");
         } else {
             throw std::runtime_error("'float32' type could not be loaded.\n");
+            return false;
         }
     } else {
         throw std::runtime_error("'numpy' module could not be loaded.");
+        return false;
     }
     
     _initialized = true;
+    return true;
 }
 
 void TTS::finalize() {
@@ -307,6 +314,7 @@ wchar_t* TTS::get_models_file_path() {
 
 wchar_t** TTS::list_models(size_t& size) {
     initialize();
+    size = 0;
     PyObject* pValue = PyObject_CallObject(reinterpret_cast<PyObject*>(_pList_models), NULL);
     
     if(PyList_Check(pValue)) {

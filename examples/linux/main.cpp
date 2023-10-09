@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         std::wcout << i << ": " << names[i] << L"\n";
     }
     
-    TTS* tts = new TTS(names[6]);
+    TTS* tts = new TTS(names[10]);
     TTS::free_list(names, model_num);
     size_t data_size;
     auto data = tts->tts(data_size, L"This is a TTS test!");
